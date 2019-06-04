@@ -17,33 +17,16 @@ all:
 	@echo
 
 base:
-	docker pull phusion/baseimage:0.11
-	docker-squash --tag phusion/baseimage:latest phusion/baseimage:0.11
-	docker tag phusion/baseimage:latest phusion/baseimage:0.11
 	cd base && docker build -t $(base_image) .
-	docker-squash --tag $(base_image_squashed) $(base_image)
-	docker tag $(base_image_squashed) $(base_image)
-	docker rmi `docker images --filter "dangling=true" -q --no-trunc`
 
 server:
 	cd seafile && cp -rf ../../scripts ./ && docker build -t $(server_image) .
-	docker-squash --tag $(server_image_squashed) $(server_image) --from-layer=$(base_image)
-	docker tag $(server_image_squashed) $(server_image)
-	docker tag $(server_image) $(latest_server_image)
-	docker rmi `docker images --filter "dangling=true" -q --no-trunc`
 
 pro-base:
 	cd pro_base && docker build -t $(pro_base_image) .
-	docker-squash --tag $(pro_base_image_squashed) $(pro_base_image)
-	docker tag $(pro_base_image_squashed) $(pro_base_image)
-	docker rmi `docker images --filter "dangling=true" -q --no-trunc`
 
 pro-server:
 	cd pro_seafile && cp -rf ../../scripts ./ && docker build -t $(pro_server_image) .
-	docker-squash --tag $(pro_server_image_squashed) $(pro_server_image) --from-layer=$(pro_base_image)
-	docker tag $(pro_server_image_squashed) $(pro_server_image)
-	docker tag $(pro_server_image) $(latest_pro_server_image)
-	docker rmi `docker images --filter "dangling=true" -q --no-trunc`
 
 push-base:
 	docker push $(base_image)
